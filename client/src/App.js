@@ -1,13 +1,22 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { Container, AppBar, Typography, Grow, Grid, Button } from '@material-ui/core';
 import photos from './images/memories.png';
+import { useDispatch } from 'react-redux';
 
 import Form from './components/Form/form.js';
 import Posts from './components/Posts/posts.js';
 import useStyles from './styles.js';
+import {getPost} from './actions/posts.js' 
 
 const App = () => {
     const classes = useStyles();
+    const dispatch=useDispatch();
+
+    //We are mounting our post using dispatch->Action
+    useEffect(()=>{
+        dispatch(getPost());
+    },[dispatch]);
+    
     return (
         <div>
             <Container maxwidth="lg">
