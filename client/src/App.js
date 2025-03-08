@@ -12,6 +12,7 @@ const App = () => {
     const classes = useStyles();
     const dispatch=useDispatch();
 
+    //We are mounting our post using dispatch->Action
     useEffect(()=>{
         dispatch(getPost());
     },[dispatch]);
