@@ -14,3 +14,16 @@ export const getPost=()=>async (dispatch)=>{
     }
     
 }
+//Similar action creator to getPost with axios.post(url,post(payload))
+export const createPost=(post)=>async (dispatch)=>{
+    try{
+        const {data}=await api.createPost(post);
+
+        dispatch({type:'CREATE',payload:data});
+    }catch(error){
+        console.log(error.message);
+        
+    }
+    
+}
+
