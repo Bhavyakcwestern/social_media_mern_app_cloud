@@ -11,10 +11,12 @@ const Posts = ({ setCurrentId }) => {
   
     return (
       !posts.length ? <CircularProgress /> : (    //posts.length=0 means false !false=true so loading bar will be there
+        //We are now going to populate/put each single post in a grid with help of map
         <Grid className={classes.container} container alignItems="stretch" spacing={3}>
+ 
           {posts.map((post) => (
             <Grid key={post._id} item xs={12} sm={6} md={6}>
-              <Post post={post} setCurrentId={setCurrentId} />
+              <Post post={post} setCurrentId={setCurrentId} /> 
             </Grid>
           ))}
         </Grid>
