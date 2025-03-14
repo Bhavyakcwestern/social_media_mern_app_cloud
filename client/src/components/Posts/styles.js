@@ -1,6 +1,10 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-export default makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
+  container: {
+    paddingTop: theme.spacing(2),
+  },
+  // Add other styles here
   mainContainer: {
     display: 'flex',
     alignItems: 'center',
@@ -12,3 +16,7 @@ export default makeStyles((theme) => ({
     textAlign: 'center',
   },
 }));
+
+export default useStyles;
+
+
