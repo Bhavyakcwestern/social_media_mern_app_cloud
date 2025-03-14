@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import useStyles from './styles.js'; 
 
-const Posts = ({ setCurrentId }) => {
+const Posts = ({ setCurrentId }) => { //Will pass setCurrentId to Post.js
     const posts = useSelector((state) => state.posts);
     const classes = useStyles();
   
