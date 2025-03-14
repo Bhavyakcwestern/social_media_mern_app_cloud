@@ -13,10 +13,14 @@ const Post = ({ post, setCurrentId }) => {
   const classes = useStyles();
 
   return (
-    //CardMedia -post.selectedfile and title
+    //CardMedia -image=post.selectedfile and title
     //Typography 1-Post Creator
-    //Typography 2-Post CreatorAT/Timestamp
-    //
+    //Typography 2-Post CreatorAt/Timestamp
+
+    //classes.overlay2-Edit button 
+    //Class Details-Has tag in it
+    //Card Content -mai message hai
+    //Card Actions-Like and Delete Icon 
     <Card className={classes.card}>
 
       <CardMedia className={classes.media} image={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} title={post.title} />
@@ -26,7 +30,9 @@ const Post = ({ post, setCurrentId }) => {
       </div>
 
       <div className={classes.overlay2}>
-        <Button style={{ color: 'white' }} size="small" onClick={() => setCurrentId(post._id)}><MoreHorizIcon fontSize="default" /></Button>
+        <Button style={{ color: 'white' }}
+         size="small" 
+         onClick={() => setCurrentId(post._id)}><MoreHorizIcon fontSize="default" /></Button>
       </div> 
 
       <div className={classes.details}>
