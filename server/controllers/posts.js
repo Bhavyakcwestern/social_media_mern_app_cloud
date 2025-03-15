@@ -36,13 +36,15 @@ export const updatePost = async (req, res) => {
 
     res.json(updatePost);
 }
+
 // post/123 so req.param will take 123
 export const deletePost=async(req,res)=>{
     const {id :_id}=req.params;
     
-    //We are checking in our database  
+    //We are checking in our database if ID is valid
     if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No post with that id');
 
+    //So id 123 as been removed 
     await PostMessage.findByIdAndRemove(id);
 
     res.json({message:'Post deleted successfully'});
