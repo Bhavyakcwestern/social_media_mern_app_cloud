@@ -16,7 +16,7 @@ const App = () => {
     //We are mounting our post using dispatch->Action
     useEffect(()=>{
         dispatch(getPost());
-    },[dispatch]);
+    },[currentId,dispatch]);
     
     return (
         <div>
