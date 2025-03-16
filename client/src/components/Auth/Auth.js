@@ -3,7 +3,7 @@ import { Avatar, Button, Paper, Grid, Typography, Container, TextField } from '@
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { signin, signup } from '../../actions/auth';
+import { signin, signup } from '../../actions/auth.js';
 import useStyles from './styles';
 
 const Auth = () => {
