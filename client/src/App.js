@@ -7,6 +7,7 @@ import Form from './components/Form/form.js';
 import Posts from './components/Posts/posts.js';
 import useStyles from './styles.js';
 import {getPost} from './actions/posts.js' 
+import Navbar from './components/Navbar/Navbar.js';
 
 const App = () => {
     const [currentId,setCurrentId]=useState(null);  //Prop passing to Form.js and Posts.js
@@ -21,11 +22,7 @@ const App = () => {
     return (
         <div>
             <Container maxwidth="lg">
-                <AppBar className={classes.appBar} position="static" color="inherit">
-                    <Typography className={classes.heading} variant="h2" align="center">PhotoHub</Typography>
-                    <img className={classes.image} src={photos} alt="photos" height="60" />
-                    <Button color="primary" variant="contained" className={classes.loginButton}>Login</Button>
-                </AppBar>
+                <Navbar/>
             </Container>
             <Grow in>
                 <Container>
