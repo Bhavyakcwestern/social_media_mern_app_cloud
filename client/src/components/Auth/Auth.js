@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Avatar, Button, Paper, Grid, Typography, Container } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-
-import {Googlelogin} from 'react-google-login';
+import { GoogleLogin } from 'react-google-login';
 import useStyles from './styles';
 import Input from './input.js';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import {signin,signup} from '../../actions/auth.js'
+import { useHistory } from 'react-router-dom'; // Using useHistory for React Router v5
+import { signin, signup } from '../../actions/auth.js';
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
@@ -16,8 +15,9 @@ const SignUp = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const classes = useStyles();
-  const dispatch=useDispatch();
-  const history=useHistory
+  const dispatch = useDispatch();
+  const history = useHistory(); // Correct usage of useHistory
+
   const handleShowPassword = () => setShowPassword(!showPassword);
 
   const switchMode = () => {
@@ -30,10 +30,10 @@ const SignUp = () => {
     e.preventDefault();
     console.log('Form submitted:', form);
 
-    if(isSignup){
-        dispatch(signup(form,history))
-    }else{
-        dispatch(signin(form,history))
+    if (isSignup) {
+      dispatch(signup(form, history)); // Pass history to the action
+    } else {
+      dispatch(signin(form, history)); // Pass history to the action
     }
   };
 
@@ -56,16 +56,16 @@ const SignUp = () => {
               </>
             )}
             <Input name="email" label="Email Address" handleChange={handleChange} type="email" />
-            <Input 
-              name="password" 
-              label="Password" 
-              handleChange={handleChange} 
-              type={showPassword ? 'text' : 'password'} 
-              handleShowPassword={handleShowPassword} 
+            <Input
+              name="password"
+              label="Password"
+              handleChange={handleChange}
+              type={showPassword ? 'text' : 'password'}
+              handleShowPassword={handleShowPassword}
             />
             {isSignup && <Input name="confirmPassword" label="Repeat Password" handleChange={handleChange} type="password" />}
           </Grid>
-          
+
           <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
             {isSignup ? 'Sign Up' : 'Sign In'}
           </Button>
@@ -83,3 +83,4 @@ const SignUp = () => {
 };
 
 export default SignUp;
+  
