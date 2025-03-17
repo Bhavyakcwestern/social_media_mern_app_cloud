@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { Avatar, Button, Paper, Grid, Typography, Container } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
+import {Googlelogin} from 'react-google-login';
 import useStyles from './styles';
 import Input from './input.js';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import {signin,signup} from '../../actions/auth.js'
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
@@ -12,7 +16,8 @@ const SignUp = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const classes = useStyles();
-
+  const dispatch=useDispatch();
+  const history=useHistory
   const handleShowPassword = () => setShowPassword(!showPassword);
 
   const switchMode = () => {
@@ -24,6 +29,12 @@ const SignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', form);
+
+    if(isSignup){
+        dispatch(signup(form,history))
+    }else{
+        dispatch(signin(form,history))
+    }
   };
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -54,6 +65,7 @@ const SignUp = () => {
             />
             {isSignup && <Input name="confirmPassword" label="Repeat Password" handleChange={handleChange} type="password" />}
           </Grid>
+          
           <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
             {isSignup ? 'Sign Up' : 'Sign In'}
           </Button>
