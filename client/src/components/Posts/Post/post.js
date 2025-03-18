@@ -66,10 +66,13 @@ const Post = ({ post, setCurrentId }) => {
         <Button size="small" color="primary" disabled={!user?.result} onClick={() => {dispatch(likePost(post._id))}}>
           <Likes/> 
         </Button>
-        {/* We are dispatching deletePost Action when it is Clicked */}
-        <Button size="small" color="primary" onClick={() =>{dispatch(deletePost(post._id))} }>
+        {/* We are dispatching deletePost Action when it is Clicked and added logic if user is the creator*/}
+        {(user?.result?._id === post?.creator) && (
+          <Button size="small" color="primary" onClick={() =>{dispatch(deletePost(post._id))} }>
           <DeleteIcon fontSize="small" /> Delete
         </Button>
+        ) }
+        
       </CardActions>
 
     </Card>
