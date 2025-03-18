@@ -3,23 +3,36 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import { AppBar, Avatar, Typography, Toolbar, Button } from '@material-ui/core';
 import photos from '../../images/memories.png';
 import useStyles from './styles.js';
+import { useDispatch } from 'react-redux';
+import * as actionType from '../../constants/actionTypes';
+import decode from 'jwt-decode';
 
 const Navbar = () => {
   const classes = useStyles();
   const history = useHistory();  //  useHistory() for React Router v5
   const location = useLocation();
+  const dispatch = useDispatch();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
+  
+  //  Handled Logout for React Router v5
+  const handleLogout = () => {
+    dispatch({ type: actionType.LOGOUT });
 
+    history.push('/auth');
+
+    setUser(null);
+  };
   useEffect(() => {
+    const token =user?.token;
+
+    if(token){
+      const decodedtoken=decode(token);
+
+      if(decodedtoken.exp *1000 <new Date().getTime()) handleLogout();
+    }
     setUser(JSON.parse(localStorage.getItem('profile')));
   }, [location]);
 
-  //  Handled Logout for React Router v5
-  const handleLogout = () => {
-    localStorage.removeItem('profile'); // Remove user from localStorage
-    setUser(null); // Update state to re-render
-    history.push('/auth'); // Redirect to sign-in page
-  };
 
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
