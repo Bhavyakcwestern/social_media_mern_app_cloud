@@ -22,14 +22,22 @@ const Form = ({ currentId, setCurrentId }) => {
     setPostData({ title: '', message: '', tags: '', selectedFile: '' });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (currentId === 0) {
-      dispatch(createPost({ ...postData, name: user?.result?.name })); // Post Data that we are getting from form.js return type below
+
+    if (!user?.result?.name) {
+      return;
+    }
+
+    try {
+      if (currentId === 0) {
+        await dispatch(createPost({ ...postData, name: user?.result?.name }));
+      } else {
+        await dispatch(updatePost(currentId, { ...postData, name: user?.result?.name }));
+      }
       clear();
-    } else {
-      dispatch(updatePost(currentId, { ...postData, name: user?.result?.name })); // Will dispatch updatePost Action if currentId is selected
-      clear();
+    } catch (error) {
+      console.error('Error submitting the form:', error);
     }
   };
 

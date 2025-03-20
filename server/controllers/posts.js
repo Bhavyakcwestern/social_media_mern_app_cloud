@@ -1,7 +1,12 @@
 import mongoose from "mongoose";
 import PostMessage from "../models/postmessages.js";
+import express from 'express';
+const router = express.Router();
+
 
 export const getPosts = async (req, res) => {
+    const { id } = req.params;
+
     try {
         const postMessages = await PostMessage.find();
         res.status(200).json(postMessages);  
@@ -13,8 +18,7 @@ export const getPosts = async (req, res) => {
 
 export const createPost = async (req, res) => {
     const post = req.body;
-    //We are replacing the creator with userID
-    const newPost = new PostMessage({...post,creator:req.userId,createdAt:new Date().toISOString()});
+    const newPost = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
     try {
         await newPost.save();
         res.status(201).json(newPost);
@@ -22,55 +26,49 @@ export const createPost = async (req, res) => {
     catch (error) {
         res.status(409).json({ message: error.message });
     }
-    
 }
-// post/123 so req.param will take 123
+
 export const updatePost = async (req, res) => {
-    const { id :_id} =req.params;
-    const post=req.body;
+    const { id: _id } = req.params;
+    const post = req.body;
     
-    //We are checking in our database  
-    if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No post with that id');
+    if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No post with that id');
 
-    const updatePost=await PostMessage.findByIdAndUpdate(_id,post,{new:true});
+    const updatedPost = await PostMessage.findByIdAndUpdate(_id, { ...post, _id }, { new: true });
 
-    res.json(updatePost);
+    res.json(updatedPost);
 }
 
-// post/123 so req.param will take 123
-export const deletePost=async(req,res)=>{
-    const {id :_id}=req.params;
+export const deletePost = async (req, res) => {
+    const { id: _id } = req.params;
     
-    //We are checking in our database if ID is valid
-    if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No post with that id');
+    if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No post with that id');
 
-    //So id 123 as been removed 
-    await PostMessage.findByIdAndDelete(_id);
+    await PostMessage.findByIdAndRemove(_id);
 
-    res.json({message:'Post deleted successfully'});
-}   
+    res.json({ message: 'Post deleted successfully' });
+}
 
+export const likePost = async (req, res) => {
+    const { id } = req.params;
 
-//It is very similar to update post when it will take id and update the likeCount
-//  with moongoose function
-export const likePost=async(req,res)=>{
-    const {id:_id}=req.params;   //eg post/123 =>123
+    if (!req.userId) return res.json({ message: 'Unauthenticated' });
 
-    if(!req.userId) return res.json({message:'Unauthenticated user'});
-    //We are checking in our database if ID is valid
-    if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No post with that id');
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('No post with that id');
     
-    const post =await PostMessage.findById(_id);
+    const post = await PostMessage.findById(id);
 
     const index = post.likes.findIndex((id) => id === String(req.userId));
 
-    if(index === -1){
+    if (index === -1) {
         post.likes.push(req.userId);
-    }else{
-        post.likes=post.likes.filter((id)=>id != String(req.userId));
+    } else {
+        post.likes = post.likes.filter((id) => id !== String(req.userId));
     }
 
-    const updatedPost=await PostMessage.findByIdAndUpdate(_id,post,{new:true});
+    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
 
-    res.json(updatedPost); //updatePost will have likeCount increased by 1
+    res.json(updatedPost);
 }
+
+export default router;
