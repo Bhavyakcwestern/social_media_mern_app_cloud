@@ -1,12 +1,7 @@
 import mongoose from "mongoose";
 import PostMessage from "../models/postmessages.js";
-import express from 'express';
-const router = express.Router();
-
 
 export const getPosts = async (req, res) => {
-    const { id } = req.params;
-
     try {
         const postMessages = await PostMessage.find();
         res.status(200).json(postMessages);  
@@ -20,10 +15,12 @@ export const createPost = async (req, res) => {
     const post = req.body;
     const newPost = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
     try {
+        console.log('Creating post:', newPost); // Add logging
         await newPost.save();
         res.status(201).json(newPost);
     } 
     catch (error) {
+        console.error('Error creating post:', error); // Add logging
         res.status(409).json({ message: error.message });
     }
 }
@@ -70,5 +67,3 @@ export const likePost = async (req, res) => {
 
     res.json(updatedPost);
 }
-
-export default router;

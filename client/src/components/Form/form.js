@@ -7,19 +7,41 @@ import useStyles from './styles';
 import { createPost, updatePost } from '../../actions/posts';
 
 const Form = ({ currentId, setCurrentId }) => {
-  const [postData, setPostData] = useState({ title: '', message: '', tags: '', selectedFile: '' });
-  const post = useSelector((state) => (currentId ? state.posts.find((message) => message._id === currentId) : null));
+  const [postData, setPostData] = useState({
+    title: '',
+    message: '',
+    tags: '',
+    selectedFile: ''
+  });
+
+  // Initialize state
+  useEffect(() => {
+    if (!currentId) {
+      setCurrentId(0);
+    }
+  }, []);
+
+  const post = useSelector((state) => 
+    currentId ? state.posts.find((message) => message._id === currentId) : null
+  );
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = useSelector((state) => state.auth.authData);
 
   useEffect(() => {
-    if (post) setPostData(post);
+    if (post) {
+      setPostData(post);
+    }
   }, [post]);
 
   const clear = () => {
     setCurrentId(0);
-    setPostData({ title: '', message: '', tags: '', selectedFile: '' });
+    setPostData({
+      title: '',
+      message: '',
+      tags: '',
+      selectedFile: ''
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -29,16 +51,31 @@ const Form = ({ currentId, setCurrentId }) => {
       return;
     }
 
+    const postWithUserData = {
+      ...postData,
+      name: user?.result?.name
+    };
+
     try {
-      if (currentId === 0) {
-        await dispatch(createPost({ ...postData, name: user?.result?.name }));
+      if (!currentId || currentId === 0) {
+        console.log('Creating new post:', postWithUserData);
+        await dispatch(createPost(postWithUserData));
       } else {
-        await dispatch(updatePost(currentId, { ...postData, name: user?.result?.name }));
+        console.log('Updating post:', postWithUserData);
+        await dispatch(updatePost(currentId, postWithUserData));
       }
       clear();
     } catch (error) {
-      console.error('Error submitting the form:', error);
+      console.error('Error submitting form:', error);
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPostData(prevState => ({
+      ...prevState,
+      [name]: name === 'tags' ? value.split(',') : value
+    }));
   };
 
   if (!user?.result?.name) {
@@ -52,15 +89,74 @@ const Form = ({ currentId, setCurrentId }) => {
   }
 
   return (
-    <Paper className={classes.paper}>
-      <form autoComplete="off" noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit}>
-        <Typography variant="h6">{currentId ? 'Editing the Post' : 'Create a Post'}</Typography>
-        <TextField name="title" variant="outlined" label="Title" fullWidth value={postData.title} onChange={(e) => setPostData({ ...postData, title: e.target.value })} />
-        <TextField name="message" variant="outlined" label="Message" fullWidth multiline rows={4} value={postData.message} onChange={(e) => setPostData({ ...postData, message: e.target.value })} />
-        <TextField name="tags" variant="outlined" label="Tags (comma separated)" fullWidth value={postData.tags} onChange={(e) => setPostData({ ...postData, tags: e.target.value.split(',') })} />
-        <div className={classes.fileInput}><FileBase type="file" multiple={false} onDone={({ base64 }) => setPostData({ ...postData, selectedFile: base64 })} /></div>
-        <Button className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" fullWidth>Submit</Button>
-        <Button variant="contained" color="secondary" size="small" onClick={clear} fullWidth>Clear</Button>
+    <Paper className={classes.paper} elevation={6}>
+      <form
+        autoComplete="off"
+        noValidate
+        className={`${classes.root} ${classes.form}`}
+        onSubmit={handleSubmit}
+      >
+        <Typography variant="h6">
+          {currentId ? 'Editing' : 'Creating'} a Memory
+        </Typography>
+        
+        <TextField
+          name="title"
+          variant="outlined"
+          label="Title"
+          fullWidth
+          value={postData.title}
+          onChange={handleChange}
+        />
+        
+        <TextField
+          name="message"
+          variant="outlined"
+          label="Message"
+          fullWidth
+          multiline
+          rows={4}
+          value={postData.message}
+          onChange={handleChange}
+        />
+        
+        <TextField
+          name="tags"
+          variant="outlined"
+          label="Tags (comma separated)"
+          fullWidth
+          value={postData.tags}
+          onChange={handleChange}
+        />
+        
+        <div className={classes.fileInput}>
+          <FileBase
+            type="file"
+            multiple={false}
+            onDone={({ base64 }) => setPostData(prevState => ({ ...prevState, selectedFile: base64 }))}
+          />
+        </div>
+        
+        <Button
+          className={classes.buttonSubmit}
+          variant="contained"
+          color="primary"
+          size="large"
+          type="submit"
+          fullWidth
+        >
+          Submit
+        </Button>
+        
+        <Button
+          variant="contained"
+          color="secondary"
+          size="small"
+          onClick={clear}
+          fullWidth
+        >
+          Clear
+        </Button>
       </form>
     </Paper>
   );
