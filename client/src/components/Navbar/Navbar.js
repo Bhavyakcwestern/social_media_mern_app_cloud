@@ -1,38 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { AppBar, Avatar, Typography, Toolbar, Button } from '@material-ui/core';
 import photos from '../../images/memories.png';
 import useStyles from './styles.js';
-import { useDispatch } from 'react-redux';
-import * as actionType from '../../constants/actionTypes';
+import { useDispatch, useSelector } from 'react-redux';
 import decode from 'jwt-decode';
+import { logout } from '../../actions/auth';
 
 const Navbar = () => {
   const classes = useStyles();
   const history = useHistory();  //  useHistory() for React Router v5
   const location = useLocation();
   const dispatch = useDispatch();
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
-  
-  //  Handled Logout for React Router v5
+  const user = useSelector((state) => state.auth.authData);
+
   const handleLogout = () => {
-    dispatch({ type: actionType.LOGOUT });
-
-    history.push('/auth');
-
-    setUser(null);
+    dispatch(logout(history));
   };
+
   useEffect(() => {
-    const token =user?.token;
+    const token = user?.token;
 
-    if(token){
-      const decodedtoken=decode(token);
+    if (token) {
+      const decodedToken = decode(token);
 
-      if(decodedtoken.exp *1000 <new Date().getTime()) handleLogout();
+      if (decodedToken.exp * 1000 < new Date().getTime()) handleLogout();
     }
-    setUser(JSON.parse(localStorage.getItem('profile')));
-  }, [location]);
-
+  }, [location, user?.token]);
 
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
