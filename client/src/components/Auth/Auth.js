@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Avatar, Button, Paper, Grid, Typography, Container } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { GoogleLogin } from 'react-google-login';
+
+import { signin, signup } from '../../actions/auth';
 import useStyles from './styles';
 import Input from './input.js';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom'; // Using useHistory for React Router v5
-import { signin, signup } from '../../actions/auth.js';
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
 
 const SignUp = () => {
   const [form, setForm] = useState(initialState);
   const [isSignup, setIsSignup] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const classes = useStyles();
   const dispatch = useDispatch();
-  const history = useHistory(); // Correct usage of useHistory
+  const history = useHistory();
+  const classes = useStyles();
 
+  const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword(!showPassword);
 
   const switchMode = () => {
@@ -28,12 +28,10 @@ const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', form);
-
     if (isSignup) {
-      dispatch(signup(form, history)); // Pass history to the action
+      dispatch(signup(form, history));
     } else {
-      dispatch(signin(form, history)); // Pass history to the action
+      dispatch(signin(form, history));
     }
   };
 
@@ -45,34 +43,26 @@ const SignUp = () => {
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">{isSignup ? 'Sign up' : 'Sign in'}</Typography>
-        {/* Handling signup and signin form */}
+        <Typography component="h1" variant="h5">{ isSignup ? 'Sign up' : 'Sign in' }</Typography>
         <form className={classes.form} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {isSignup && (
+            { isSignup && (
               <>
                 <Input name="firstName" label="First Name" handleChange={handleChange} autoFocus half />
                 <Input name="lastName" label="Last Name" handleChange={handleChange} half />
               </>
             )}
             <Input name="email" label="Email Address" handleChange={handleChange} type="email" />
-            <Input
-              name="password"
-              label="Password"
-              handleChange={handleChange}
-              type={showPassword ? 'text' : 'password'}
-              handleShowPassword={handleShowPassword}
-            />
-            {isSignup && <Input name="confirmPassword" label="Repeat Password" handleChange={handleChange} type="password" />}
+            <Input name="password" label="Password" handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} />
+            { isSignup && <Input name="confirmPassword" label="Repeat Password" handleChange={handleChange} type="password" /> }
           </Grid>
-
           <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-            {isSignup ? 'Sign Up' : 'Sign In'}
+            { isSignup ? 'Sign Up' : 'Sign In' }
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
               <Button onClick={switchMode}>
-                {isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign Up"}
+                { isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign Up" }
               </Button>
             </Grid>
           </Grid>
@@ -83,4 +73,4 @@ const SignUp = () => {
 };
 
 export default SignUp;
-  
+

@@ -1,15 +1,17 @@
 import axios from 'axios';
+import store from '../store.js'; // Import the Redux store
 
 const API = axios.create({ baseURL: 'http://localhost:5000' });
 
 API.interceptors.request.use((req) => {
-    const profile = localStorage.getItem('profile');
+  const state = store.getState(); // Get the current state from the Redux store
+  const profile = state.auth.authData;
 
-    if (profile) {
-        req.headers.Authorization = `Bearer ${JSON.parse(profile)?.token}`;
-    }
+  if (profile) {
+    req.headers.Authorization = `Bearer ${profile.token}`;
+  }
 
-    return req;
+  return req;
 });
 
 export const fetchPosts = () => API.get('/posts');
