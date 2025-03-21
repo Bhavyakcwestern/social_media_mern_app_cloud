@@ -1,0 +1,18 @@
+# Use Node.js for development
+FROM node:18-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package.json ./
+RUN npm install --legacy-peer-deps
+
+# Copy the rest of the client files
+COPY . ./
+
+# Expose React's default development port
+EXPOSE 3000
+
+# Start the development server
+CMD ["npm", "start"]
