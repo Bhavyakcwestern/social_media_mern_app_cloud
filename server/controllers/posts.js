@@ -136,3 +136,21 @@ export const deleteComment = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+export const getCommentById = async (req, res) => {
+    const { commentId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(commentId)) 
+        return res.status(404).send('No comment with that id');
+
+    try {
+        const comment = await Comment.findById(commentId)
+            .populate('creator', 'name');
+
+        if (!comment) return res.status(404).json({ message: 'Comment not found' });
+
+        res.status(200).json(comment);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
