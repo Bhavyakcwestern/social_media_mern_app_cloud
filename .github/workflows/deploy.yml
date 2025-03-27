@@ -1,4 +1,4 @@
-name: Deploy Backend to GKE
+name: Deploy Backend to GKE 
 
 on:
   push:
@@ -31,15 +31,7 @@ jobs:
       - name: Configure Docker for Google Artifact Registry
         run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
-      # ---- Build and Push Backend ----
-      - name: Build Backend Docker Image
-        run: docker build -t $BACKEND_IMAGE:latest -f server/Dockerfile.prod server/
-
-      - name: Push Backend Docker Image
-        run: docker push $BACKEND_IMAGE:latest
-
-      # ---- Deploy Backend to Kubernetes ----
-      - name: Get GKE Credentials
+      - name: Get GKE Credentials  # <-- ADD THIS STEP BEFORE KUBECTL COMMANDS
         run: gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $PROJECT_ID
 
       - name: Deploy Backend to GKE
@@ -47,12 +39,3 @@ jobs:
 
       - name: Deploy Load Balancer
         run: kubectl apply -f k8s/backend-loadbalancer.yaml
-
-      # ---- Frontend Deployment (Commented Out) ----
-      # - name: Build and Push Frontend (Disabled)
-      #   run: |
-      #     docker build -t $FRONTEND_IMAGE:latest -f client/Dockerfile.prod client/
-      #     docker push $FRONTEND_IMAGE:latest
-      #
-      # - name: Deploy Frontend (Disabled)
-      #   run: kubectl apply -f k8s/frontend-deployment.yaml
