@@ -1,35 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deployment
+  name: mern-backend
+  labels:
+    app: mern-backend
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: backend
+      app: mern-backend
   template:
     metadata:
       labels:
-        app: backend
+        app: mern-backend
     spec:
       containers:
-        - name: backend
-          image: gcr.io/YOUR_PROJECT_ID/social-media-backend:latest
+        - name: mern-backend
+          image: us-central1-docker.pkg.dev/social-media-mern-app-cloud/mern-backend-repo/backend:latest
           ports:
             - containerPort: 5000
           env:
-            - name: MONGO_URI
-              value: "mongodb+srv://your-db-connection-string"
-            - name: JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: jwt-secret
-                  key: secret
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: jwt-secret
-type: Opaque
-data:
-  secret: your_base64_encoded_secret_here
+            - name: NODE_ENV
+              value: "production"
