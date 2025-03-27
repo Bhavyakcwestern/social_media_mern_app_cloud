@@ -16,8 +16,11 @@ COPY . .
 # Exposing the port
 EXPOSE 5000
 
-# Setting environment variable
-ENV NODE_ENV=production
+# Setting environment variables
+ENV NODE_ENV=production \
+    PORT=5000 \
+    CONNECTION_URL='mongodb+srv://bhavyakc08:project14@cluster0.x9pre.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0' \
+    JWT_SECRET='group14'
 
 # Starting the server without nodemon
 CMD ["node", "index.js"]
