@@ -1,4 +1,4 @@
-name: Deploy Backend to GKE
+name: Deploy to GKE
 on:
   push:
     branches:
@@ -9,10 +9,11 @@ env:
   GKE_CLUSTER: mern-cluster
   GKE_ZONE: us-central1-a
   BACKEND_IMAGE: us-central1-docker.pkg.dev/social-media-mern-app-cloud/mern-backend-repo/backend
+  FRONTEND_IMAGE: us-central1-docker.pkg.dev/social-media-mern-app-cloud/mern-frontend-repo/frontend
 
 jobs:
   deploy:
-    name: Deploy Backend to GKE
+    name: Deploy to GKE
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -34,21 +35,16 @@ jobs:
       - name: Get GKE Credentials
         run: gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $PROJECT_ID
       
-      - name: Clean up existing deployments
+      - name: Build Frontend
         run: |
-          kubectl delete deployment mern-backend --ignore-not-found=true
-          kubectl delete service backend-loadbalancer --ignore-not-found=true
-          kubectl delete service backend-service --ignore-not-found=true
+          cd client
+          docker build -t $FRONTEND_IMAGE -f Dockerfile.prod .
+          docker push $FRONTEND_IMAGE
       
-      - name: Deploy Backend to GKE
+      - name: Deploy Frontend
         run: |
-          kubectl apply -f k8s/backend-deployment.yaml
-          sleep 10
-      
-      - name: Deploy Services
-        run: |
-          kubectl apply -f k8s/backend-service.yaml
-          kubectl apply -f k8s/backend-loadbalancer.yaml
+          kubectl apply -f k8s/frontend-deployment.yaml
+          kubectl apply -f k8s/frontend-service.yaml
       
       - name: Verify Deployment
         run: |
