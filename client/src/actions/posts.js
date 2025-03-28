@@ -45,3 +45,22 @@ export const likePost = (id) => async (dispatch) => {
         console.log(error);
     }
 }
+
+export const getComments = (postId) => async (dispatch) => {
+    try {
+        const { data } = await api.fetchComments(postId);
+        dispatch({ type: 'FETCH_COMMENTS', payload: { postId, comments: data } });
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+    }
+};
+
+
+export const addComment = (postId, content) => async (dispatch) => {
+    try {
+        const { data } = await api.addComment(postId, { content });
+        dispatch({ type: 'ADD_COMMENT', payload: { postId, comment: data } });
+    } catch (error) {
+        console.log(error);
+    }
+};
