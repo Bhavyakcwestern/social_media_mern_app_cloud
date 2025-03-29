@@ -35,15 +35,15 @@ jobs:
       - name: Get GKE Credentials
         run: gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $PROJECT_ID
       
-      - name: Cleanup Previous Deployments
-        run: |
+      # - name: Cleanup Previous Deployments
+      #   run: |
          
           
-          # Clean up frontend resources
-          kubectl delete deployment mern-frontend --ignore-not-found=true
-          kubectl delete service frontend-service --ignore-not-found=true
+      #     # Clean up frontend resources
+      #     kubectl delete deployment mern-frontend --ignore-not-found=true
+      #     kubectl delete service frontend-service --ignore-not-found=true
           
-          echo "Previous frontend deployments cleaned up"
+      #     echo "Previous frontend deployments cleaned up"
 
       - name: Build Backend
         run: |
