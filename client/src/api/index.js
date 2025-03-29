@@ -1,7 +1,7 @@
 import axios from 'axios';
 import store from '../store.js'; // Import the Redux store
 
-const API = axios.create({ baseURL: process.env.REACT_APP_API_URL || 'http://35.192.132.239' });
+const API = axios.create({ baseURL:'http://35.192.132.239' });
 
  
 

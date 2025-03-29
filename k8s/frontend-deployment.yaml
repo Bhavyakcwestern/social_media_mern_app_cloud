@@ -21,7 +21,7 @@ spec:
             - containerPort: 80
           env:
             - name: REACT_APP_API_URL
-              value: "http://34.58.249.110"
+              value: "http://35.192.132.239"
           livenessProbe:
             httpGet:
               path: /
