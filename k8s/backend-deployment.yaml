@@ -28,25 +28,42 @@ spec:
               value: "mongodb+srv://bhavyakc08:project14@cluster0.x9pre.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
             - name: JWT_SECRET
               value: "group14"
+
+          # Adjusted Startup Probe
           startupProbe:
             httpGet:
-              path: /posts
+              path: /health   # Change to a dedicated health check route
               port: 5000
-            failureThreshold: 30
+            initialDelaySeconds: 40  # Increased to allow DB connection
+            failureThreshold: 10  # Allows more retries before failure
             periodSeconds: 10
+            timeoutSeconds: 5
+
+          # Adjusted Liveness Probe
           livenessProbe:
             httpGet:
-              path: /posts
+              path: /health
               port: 5000
-            initialDelaySeconds: 60
+            initialDelaySeconds: 50  # Increased to avoid premature failure
             periodSeconds: 10
-            failureThreshold: 3
+            failureThreshold: 5
             timeoutSeconds: 5
+
+          # Adjusted Readiness Probe
           readinessProbe:
             httpGet:
-              path: /posts
+              path: /health
               port: 5000
             initialDelaySeconds: 30
             periodSeconds: 10
-            failureThreshold: 3
+            failureThreshold: 5
             timeoutSeconds: 5
+
+          # Added Resource Limits
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
