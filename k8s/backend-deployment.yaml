@@ -17,6 +17,7 @@ spec:
       containers:
         - name: mern-backend
           image: us-central1-docker.pkg.dev/social-media-mern-app-cloud/mern-backend-repo/backend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
           env:
@@ -59,11 +60,11 @@ spec:
             failureThreshold: 3
             timeoutSeconds: 3
 
-          # Resource Limits (unchanged)
+          # Increased Resource Limits
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
               memory: "512Mi"
               cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"

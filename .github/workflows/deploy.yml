@@ -34,40 +34,34 @@ jobs:
       
       - name: Get GKE Credentials
         run: gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $PROJECT_ID
-      
-      # - name: Cleanup Previous Deployments
-      #   run: |
-         
-          
-      #     # Clean up frontend resources
-      #     kubectl delete deployment mern-frontend --ignore-not-found=true
-      #     kubectl delete service frontend-service --ignore-not-found=true
-          
-      #     echo "Previous frontend deployments cleaned up"
 
       - name: Build Backend
         run: |
           cd server
-          docker build -t $BACKEND_IMAGE -f Dockerfile.prod .
-          docker push $BACKEND_IMAGE
+          docker build -t $BACKEND_IMAGE:latest -f Dockerfile.prod .
+          docker push $BACKEND_IMAGE:latest
 
       - name: Build Frontend
         run: |
           cd client
-          docker build -t $FRONTEND_IMAGE -f Dockerfile.prod .
-          docker push $FRONTEND_IMAGE
+          docker build -t $FRONTEND_IMAGE:latest -f Dockerfile.prod .
+          docker push $FRONTEND_IMAGE:latest
       
       - name: Deploy Backend
         run: |
           kubectl apply -f k8s/backend-deployment.yaml
           kubectl apply -f k8s/backend-service.yaml
           kubectl apply -f k8s/backend-loadbalancer.yaml
+          kubectl rollout restart deployment mern-backend
+          kubectl rollout status deployment/mern-backend --timeout=300s
           echo "Backend deployed successfully"
 
       - name: Deploy Frontend
         run: |
           kubectl apply -f k8s/frontend-deployment.yaml
           kubectl apply -f k8s/frontend-service.yaml
+          kubectl rollout restart deployment mern-frontend
+          kubectl rollout status deployment/mern-frontend --timeout=300s
           echo "Frontend deployed successfully"
       
       - name: Verify Deployment
