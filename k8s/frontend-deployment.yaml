@@ -17,6 +17,7 @@ spec:
       containers:
         - name: mern-frontend
           image: us-central1-docker.pkg.dev/social-media-mern-app-cloud/mern-frontend-repo/frontend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           env:
