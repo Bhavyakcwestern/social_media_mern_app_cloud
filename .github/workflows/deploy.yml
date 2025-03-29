@@ -37,16 +37,13 @@ jobs:
       
       - name: Cleanup Previous Deployments
         run: |
-          # Clean up backend resources
-          kubectl delete deployment mern-backend --ignore-not-found=true
-          kubectl delete service backend-service --ignore-not-found=true
-          kubectl delete service backend-loadbalancer --ignore-not-found=true
+         
           
           # Clean up frontend resources
           kubectl delete deployment mern-frontend --ignore-not-found=true
           kubectl delete service frontend-service --ignore-not-found=true
           
-          echo "Previous deployments cleaned up"
+          echo "Previous frontend deployments cleaned up"
 
       - name: Build Backend
         run: |
