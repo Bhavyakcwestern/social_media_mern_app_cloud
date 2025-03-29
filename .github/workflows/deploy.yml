@@ -35,18 +35,36 @@ jobs:
       - name: Get GKE Credentials
         run: gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $PROJECT_ID
       
+      - name: Build Backend
+        run: |
+          cd server
+          docker build -t $BACKEND_IMAGE -f Dockerfile.prod .
+          docker push $BACKEND_IMAGE
+
       - name: Build Frontend
         run: |
           cd client
           docker build -t $FRONTEND_IMAGE -f Dockerfile.prod .
           docker push $FRONTEND_IMAGE
       
+      - name: Deploy Backend
+        run: |
+          kubectl apply -f k8s/backend-deployment.yaml
+          kubectl apply -f k8s/backend-service.yaml
+          kubectl apply -f k8s/backend-loadbalancer.yaml
+          # Wait for backend rollout to complete
+          kubectl rollout status deployment/mern-backend
+
       - name: Deploy Frontend
         run: |
           kubectl apply -f k8s/frontend-deployment.yaml
           kubectl apply -f k8s/frontend-service.yaml
+          # Wait for frontend rollout to complete
+          kubectl rollout status deployment/mern-frontend
       
       - name: Verify Deployment
         run: |
+          echo "Current Pods:"
           kubectl get pods
+          echo "Current Services:"
           kubectl get services
