@@ -1,7 +1,7 @@
 import axios from 'axios';
 import store from '../store.js'; // Import the Redux store
 
-const API = axios.create({ baseURL: 'http://34.58.249.110' });
+const API = axios.create({ baseURL: 'http://35.239.17.4' });
 
 API.interceptors.request.use((req) => {
   const state = store.getState(); // Get the current state from the Redux store
