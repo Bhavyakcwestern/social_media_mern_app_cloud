@@ -10,6 +10,7 @@ env:
   GKE_ZONE: us-central1-a
   BACKEND_IMAGE: us-central1-docker.pkg.dev/social-media-mern-app-cloud/mern-backend-repo/backend
   FRONTEND_IMAGE: us-central1-docker.pkg.dev/social-media-mern-app-cloud/mern-frontend-repo/frontend
+  SHA: ${{ github.sha }}
 
 jobs:
   deploy:
@@ -38,21 +39,26 @@ jobs:
       - name: Build Backend
         run: |
           cd server
-          docker build -t $BACKEND_IMAGE:latest -f Dockerfile.prod .
-          docker push $BACKEND_IMAGE:latest
+          docker build -t $BACKEND_IMAGE:$SHA -f Dockerfile.prod .
+          docker push $BACKEND_IMAGE:$SHA
 
       - name: Build Frontend
         run: |
           cd client
-          docker build -t $FRONTEND_IMAGE:latest -f Dockerfile.prod .
-          docker push $FRONTEND_IMAGE:latest
+          docker build -t $FRONTEND_IMAGE:$SHA -f Dockerfile.prod .
+          docker push $FRONTEND_IMAGE:$SHA
+      
+      - name: Update Kubernetes Configs
+        run: |
+          # Replace image tags in deployment files
+          sed -i "s|$BACKEND_IMAGE:latest|$BACKEND_IMAGE:$SHA|" k8s/backend-deployment.yaml
+          sed -i "s|$FRONTEND_IMAGE:latest|$FRONTEND_IMAGE:$SHA|" k8s/frontend-deployment.yaml
       
       - name: Deploy Backend
         run: |
           kubectl apply -f k8s/backend-deployment.yaml
           kubectl apply -f k8s/backend-service.yaml
           kubectl apply -f k8s/backend-loadbalancer.yaml
-          kubectl rollout restart deployment mern-backend
           kubectl rollout status deployment/mern-backend --timeout=300s
           echo "Backend deployed successfully"
 
@@ -60,15 +66,13 @@ jobs:
         run: |
           kubectl apply -f k8s/frontend-deployment.yaml
           kubectl apply -f k8s/frontend-service.yaml
-          kubectl rollout restart deployment mern-frontend
           kubectl rollout status deployment/mern-frontend --timeout=300s
           echo "Frontend deployed successfully"
       
       - name: Verify Deployment
         run: |
-          echo "Waiting for pods to be ready..."
-          sleep 30
           echo "Current Pods:"
           kubectl get pods
           echo "Current Services:"
           kubectl get services
+          echo "Deployed SHA: $SHA"
