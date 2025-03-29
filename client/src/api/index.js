@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from '../store.js';
 
 // Get API URL from environment variables with fallback
-const API_URL = process.env.REACT_APP_API_URL || 'http://35.192.132.239';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const API = axios.create({ 
   baseURL: API_URL,
