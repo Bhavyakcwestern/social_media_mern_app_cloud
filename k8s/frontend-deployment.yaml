@@ -19,13 +19,9 @@ spec:
           image: us-central1-docker.pkg.dev/social-media-mern-app-cloud/mern-frontend-repo/frontend:latest
           ports:
             - containerPort: 80
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
-              cpu: "200m"
-              memory: "256Mi"
+          env:
+            - name: REACT_APP_API_URL
+              value: "http://34.58.249.110"
           livenessProbe:
             httpGet:
               path: /
