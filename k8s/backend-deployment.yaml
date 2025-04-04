@@ -6,6 +6,11 @@ metadata:
     app: mern-backend
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1         # how many additional pods can be scheduled above the desired number
+      maxUnavailable: 0   # how many pods can be unavailable during the update
   selector:
     matchLabels:
       app: mern-backend
@@ -29,8 +34,6 @@ spec:
               value: "mongodb+srv://bhavyakc08:project14@cluster0.x9pre.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
             - name: JWT_SECRET
               value: "group14"
-
-          # Updated Startup Probe to use /health endpoint
           startupProbe:
             httpGet:
               path: /health
@@ -39,8 +42,6 @@ spec:
             failureThreshold: 10
             periodSeconds: 10
             timeoutSeconds: 5
-
-          # Updated Liveness Probe to use /health endpoint
           livenessProbe:
             httpGet:
               path: /health
@@ -49,8 +50,6 @@ spec:
             periodSeconds: 15
             failureThreshold: 3
             timeoutSeconds: 3
-
-          # Updated Readiness Probe to use /health endpoint
           readinessProbe:
             httpGet:
               path: /health
@@ -59,8 +58,6 @@ spec:
             periodSeconds: 10
             failureThreshold: 3
             timeoutSeconds: 3
-
-          # Increased Resource Limits
           resources:
             requests:
               memory: "512Mi"
