@@ -6,6 +6,11 @@ metadata:
     app: mern-frontend
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1         # allows one extra pod during updates
+      maxUnavailable: 0   # ensures no pod downtime
   selector:
     matchLabels:
       app: mern-frontend
